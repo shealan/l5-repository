@@ -86,7 +86,7 @@ interface RepositoryInterface
      *
      * @return mixed
      */
-    public function find($id, $columns = ['*']);
+    public function find($uuid);
 
     /**
      * Find data by field and value
@@ -148,7 +148,7 @@ interface RepositoryInterface
      *
      * @return mixed
      */
-    public function update(array $attributes, $id);
+    public function update(array $attributes, $uuid);
 
     /**
      * Update or Create an entity in repository
