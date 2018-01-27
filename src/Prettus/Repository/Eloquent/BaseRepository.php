@@ -447,16 +447,15 @@ abstract class BaseRepository implements RepositoryInterface, RepositoryCriteria
     /**
      * Find data by id
      *
-     * @param       $id
-     * @param array $columns
+     * @param       $uuid
      *
      * @return mixed
      */
-    public function find($id, $columns = ['*'])
+    public function find($uuid)
     {
         $this->applyCriteria();
         $this->applyScope();
-        $model = $this->model->findOrFail($id, $columns);
+        $model = $this->model->whereUuid($uuid)->findOrFail();
         $this->resetModel();
 
         return $this->parserResult($model);
@@ -585,7 +584,7 @@ abstract class BaseRepository implements RepositoryInterface, RepositoryCriteria
      *
      * @return mixed
      */
-    public function update(array $attributes, $id)
+    public function update(array $attributes, $uuid)
     {
         $this->applyScope();
 
@@ -601,14 +600,14 @@ abstract class BaseRepository implements RepositoryInterface, RepositoryCriteria
                 $attributes = $model->toArray();
             }
 
-            $this->validator->with($attributes)->setId($id)->passesOrFail(ValidatorInterface::RULE_UPDATE);
+            $this->validator->with($attributes)->setId($uuid)->passesOrFail(ValidatorInterface::RULE_UPDATE);
         }
 
         $temporarySkipPresenter = $this->skipPresenter;
 
         $this->skipPresenter(true);
 
-        $model = $this->model->findOrFail($id);
+        $model = $this->model->whereUuid($uuid)->findOrFail();
         $model->fill($attributes);
         $model->save();
 
